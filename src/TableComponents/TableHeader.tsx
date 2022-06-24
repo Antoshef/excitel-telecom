@@ -1,5 +1,5 @@
 import { FC, memo } from "react";
-import { CAPITAL, COUNTRY, FLAG, POPULATION } from "./constants";
+import { CAPITAL, COUNTRY, FLAG, POPULATION } from "../constants";
 
 const TableHeader: FC = () => (
   <thead>

@@ -1,7 +1,87 @@
 .App {
   text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  height: 100%;
+  background-color: beige;
 }
 
+.custom-table {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  max-width: 900px;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.dropdown-menu {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 25;
+  left: 30;
+  width: 100%;
+  height: 100px;
+  background-color: white;
+  z-index: 1;
+}
+
+.dropdown-item {
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  color: blue
+}
+
+table, th, td {
+  border-collapse: collapse;
+  border: 1px solid
+}
+
+th, td {
+  padding: 0 8px;
+}
+
+th {
+  height: 40px;
+  background-color: coral;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.table-data {
+  width: 31%;
+}
+
+.country-btn {
+  cursor: pointer;
+  width: 100%;
+  background-color: transparent;
+  border: none;
+}
+
+.country-btn:hover {
+  color: blue;
+}
+
+.top-bottom-spacing {
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.table-footer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
 
 .Dialog {
   position: fixed;
