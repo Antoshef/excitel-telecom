@@ -1,3 +1,15 @@
+@media screen and (max-width: 550px) {
+  .main-header {
+    flex-direction: column;
+  }
+  .table-footer {
+    flex-direction: column;
+    align-items: center;
+    width: auto;
+    gap: 8px;
+  }
+}
+
 .App {
   text-align: center;
   display: flex;
@@ -9,29 +21,47 @@
   background-color: beige;
 }
 
+.main-header {
+  display: flex;
+  gap: 8px;
+}
+
+.label {
+  margin-right: 8px;
+}
+
+.main-subeheader {
+  display: flex;
+  flex-direction: row;
+}
+
 .custom-table {
   display: flex;
   justify-content: center;
   flex-direction: column;
   max-width: 900px;
   width: 100%;
-  overflow-x: auto;
 }
 
 .dropdown-menu {
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: 25;
-  left: 30;
+  top: 100%;
+  left: 0;
   width: 100%;
-  height: 100px;
+  max-height: 250px;
+  overflow: auto;
   background-color: white;
   z-index: 1;
 }
 
 .dropdown-item {
   cursor: pointer;
+}
+
+.search-bar {
+  position: relative;
 }
 
 .dropdown-item:hover {
@@ -61,6 +91,14 @@ tr:nth-child(even) {
   width: 31%;
 }
 
+.table {
+  width: 100%;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
 .country-btn {
   cursor: pointer;
   width: 100%;
@@ -83,7 +121,7 @@ tr:nth-child(even) {
   justify-content: space-between;
 }
 
-.Dialog {
+.dialog {
   position: fixed;
   z-index: 1;
   padding-top: 100px;
@@ -96,7 +134,7 @@ tr:nth-child(even) {
   background-color: rgba(0,0,0,0.4);
 }
 
-.Dialog-content {
+.dialog-content {
   position: relative;
   background-color: #fefefe;
   margin: auto;
@@ -110,18 +148,27 @@ tr:nth-child(even) {
   animation-duration: 0.4s
 }
 
-.Dialog-header {
+.dialog-header {
   padding: 2px 16px;
-  background-color: #5cb85c;
+  background-color: coral;
   color: white;
 }
 
-.Dialog-body {padding: 2px 16px;}
-
-.Dialog-footer {
+.dialog-body {
   padding: 2px 16px;
-  background-color: #5cb85c;
+}
+
+.dialog-footer {
+  padding: 2px 16px;
+  background-color: coral;
   color: white;
+}
+
+.align-center {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  place-content: center;
 }
 
 .close {
@@ -129,4 +176,13 @@ tr:nth-child(even) {
   float: right;
   font-size: 28px;
   font-weight: bold;
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
+}
+
+img {
+  width: 22px;
+  height: 22px; 
+  border: 1px solid #d7d7d7;
 }

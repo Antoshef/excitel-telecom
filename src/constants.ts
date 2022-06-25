@@ -2,6 +2,9 @@ export const COUNTRY = "Country"
 export const CAPITAL = "Capital"
 export const POPULATION = "Population"
 export const FLAG = "Flag"
+export const SEARCH = "Search"
+export const SORT_BY = "Sort by"
+export const MAIN_HEADER = "Destinations"
 
 export enum PageSizeEnum {
   SM = 10,

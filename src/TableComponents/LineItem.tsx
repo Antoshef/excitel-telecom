@@ -1,4 +1,4 @@
-import React, { FC, MouseEvent, memo, useState, useEffect } from "react"
+import { FC, MouseEvent, memo, useState, useEffect } from "react"
 import { ICountry } from "../models"
 
 type Props = {
@@ -33,7 +33,7 @@ const LineItem: FC<Props> = ({ country, onSuccess }) => {
       <td className="table-data">{name}</td>
       <td className="table-data">{capitalName}</td>
       <td className="table-data">{population}</td>
-      <td><img style={{ width: 22, height: 22 }} src={flag} /></td>
+      <td><img src={flag} /></td>
     </tr>
   )
 }

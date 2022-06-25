@@ -3,84 +3,90 @@ import CustomTablePagination from './TableComponents/CustomTablePagination';
 import "./App.css"
 import { ICountry } from './models';
 import Loader from './Loader';
-import { countriesList, SortByEnum } from './constants';
+import { countriesList, MAIN_HEADER, SEARCH, SortByEnum, SORT_BY } from './constants';
 import * as _ from "lodash"
+import { sortHandler } from './helpers';
+import Dialog from './Dialog/Dialog';
 
 const App: FC = () => {
-  const [countries, setCounties] = useState<ICountry[]>(countriesList)
+  const [countries, setCounties] = useState<ICountry[]>([])
   const [search, setSearch] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [filter, setFilter] = useState("")
+  const [componentIsLoaded, setComponentIsLoaded] = useState(false)
+  const [filteredCountries, setFilteredCountries] = useState<ICountry[]>([])
+  const [open, setOpen] = useState<ICountry | boolean>(false)
+  const [openDropdown, setOpenDropdown] = useState(false)
   
   useEffect(() => {
-    // getCountries()
+    getCountries()
   }, [])
 
   useEffect(() => {
-    
+    search.length > 0 
+      ? getCountries(search)
+      : setOpenDropdown(false)
   }, [search])
 
-  const getCountries = (name?: string) => {
-    name && console.log(name, "DONE")
-    // try {
-    //   setIsLoading(true)
-    //   const url = "https://cors-anywhere.herokuapp.com/https://excitel-countries.azurewebsites.net/countries"
-    //   const response = await fetch(url, {
-    //     method: "GET",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //   })
-    //   const data: ICountry[] = await response.json()
-    //   setCounties(data)
-    //   setIsLoading(false)
-    // } catch (err) {
-    //   setIsLoading(false)
-    //   throw err
-    // }
+  const getCountries = async (name?: string) => {
+    try {
+      setIsLoading(true)
+      if (!componentIsLoaded) {
+        const url = "https://cors-anywhere.herokuapp.com/https://excitel-countries.azurewebsites.net/countries"
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        const data: ICountry[] = await response.json()
+        setCounties(data)
+        setComponentIsLoaded(true)
+      } else if (componentIsLoaded && name?.length) {
+        const url = `https://cors-anywhere.herokuapp.com/https://excitel-countries.azurewebsites.net/countries/${name}`
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        const data: ICountry[] = await response.json()
+        setFilteredCountries(data)
+        setOpenDropdown(true)
+      } else if (componentIsLoaded && !name?.length) {
+        setFilteredCountries([])
+        setOpenDropdown(false)
+      }
+      setIsLoading(false)
+    } catch (err) {
+      setIsLoading(false)
+      throw err
+    }
   }
-
-  // const items = getCountries(search)
-
-  useEffect(() => setFilter(search), [search])
 
   const changeHandler = (e: any) => setSearch(e.target.value)
   
-  const debounceOnChange = _.debounce(changeHandler, 1000, {
+  const debounceOnChange = _.debounce(changeHandler, 1500, {
     "leading": false,
     "trailing": true
   })
 
-  const sortHandler = useCallback((value: SortByEnum) => {
-    switch (value) {
-      case SortByEnum.CITY:
-        const sortedByCity = [...countries.sort((a, b) => a.capitalName.localeCompare(b.capitalName))]
-        setCounties(sortedByCity)
-        break;
-      case SortByEnum.POPULATION:
-        const sortedByPopulation = [...countries.sort((a, b) => b.population - a.population)]
-        setCounties(sortedByPopulation)
-        break;
-      default:
-        const sortedByName = [...countries.sort((a, b) => a.name.localeCompare(b.name))]
-        setCounties(sortedByName)
-        break;
-    }
-  }, [])
-
   const pickNameHandler = (name: string) => {
-    setFilter("")
-    getCountries(name)
+    const currentCountry = filteredCountries.find(item => item.name === name)
+    currentCountry && setOpen(currentCountry)
   }
 
+  const addSorting = (value: SortByEnum) => setCounties(sortHandler(value, countries))
+
+  const closeHandler = useCallback(() => setOpen(false), [])
+
   const displayDropdown = () => {
-    const filteredCountryNames = countries
-      .filter(item => item.name.toLowerCase().includes(filter.toLocaleLowerCase()))
+    const filteredCountryNames = filteredCountries
+      .filter(item => item.name.toLowerCase().includes(search.toLocaleLowerCase()))
       .slice(0, 10)
 
     return (
       <div className="dropdown-menu">
-        {filteredCountryNames.map(item => (
+        {filteredCountryNames && filteredCountryNames.map(item => (
           <span 
             onClick={() => pickNameHandler(item.name)} 
             className="dropdown-item"
@@ -93,32 +99,39 @@ const App: FC = () => {
     )
   }
 
-  console.log(search, "FILTER")
-
   return (
     <div className="App">
       <Loader open={isLoading} />
-      <div style={{ display: "flex", flexDirection: "row" }} className="top-bottom-spacing">
-        <div style={{ position: "relative" }}>
-          <label style={{ marginRight: 8 }} htmlFor="search">Search</label>
-          <input 
-            type="text"
-            id="search"
-            onChange={debounceOnChange}
-            autoComplete="off"
-          />
-          {filter.length !== 0 && displayDropdown()}
+      <h1>{MAIN_HEADER}</h1>
+      <div className="main-header top-bottom-spacing">
+        <div className="main-subeheader">
+          <label className="label" htmlFor="search">{SEARCH}</label>
+          <div className="search-bar">
+            <input 
+              type="text"
+              id="search"
+              onChange={debounceOnChange}
+              autoComplete="off"
+            />
+            {openDropdown && displayDropdown()}
+          </div>
         </div>
-        <label style={{ marginRight: 8, marginLeft: 16 }} htmlFor="search">Sort by</label>
-        <select
-          onChange={(e) => sortHandler(e.target.value as SortByEnum)}
-        >
-          <option value={SortByEnum.COUNTRY}>{SortByEnum.COUNTRY}</option>
-          <option value={SortByEnum.CITY}>{SortByEnum.CITY}</option>
-          <option value={SortByEnum.POPULATION}>{SortByEnum.POPULATION}</option>
-        </select>
+        <div className="main-subeheader">
+          <label className="label" htmlFor="search">{SORT_BY}</label>
+          <select
+            onChange={(e) => addSorting(e.target.value as SortByEnum)}
+          >
+            <option value={SortByEnum.COUNTRY}>{SortByEnum.COUNTRY}</option>
+            <option value={SortByEnum.CITY}>{SortByEnum.CITY}</option>
+            <option value={SortByEnum.POPULATION}>{SortByEnum.POPULATION}</option>
+          </select>
+        </div>
       </div>
       <CustomTablePagination data={countries} />
+      <Dialog
+        data={open} 
+        onClose={closeHandler}
+      />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useState } from "react"
-import Dialog from "../Dialog"
+import Dialog from "../Dialog/Dialog"
 import LineItem from "./LineItem"
 import { ICountry, TableProps } from "../models"
 import TableHeader from "./TableHeader"
@@ -12,7 +12,7 @@ const Table: FC<TableProps> = ({ data }) => {
   const closeHandler = useCallback(() => setOpen(false), [])
 
   return (
-    <>
+    <div className="table-wrapper">
       <table className="table">
         <TableHeader />
         <tbody>
@@ -26,10 +26,10 @@ const Table: FC<TableProps> = ({ data }) => {
         </tbody>
       </table>
       <Dialog 
-        open={typeof open !== "boolean"} 
+        data={open} 
         onClose={closeHandler}
       />
-    </>
+    </div>
   )
 }
 
