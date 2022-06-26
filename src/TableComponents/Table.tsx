@@ -1,13 +1,35 @@
-import React, { FC, useCallback, useState } from "react"
+import { FC, useCallback, useEffect, useState } from "react"
 import Dialog from "../Dialog/Dialog"
 import LineItem from "./LineItem"
 import { ICountry, TableProps } from "../models"
 import TableHeader from "./TableHeader"
+import useLoader from "../Hooks/useLoader.hook"
+
+const DURATION = 1500;
 
 const Table: FC<TableProps> = ({ data }) => {
   const [open, setOpen] = useState<ICountry | boolean>(false)
+  const [startTimer, setStartTimer] = useState(false)
+  const [endTimer, setEndTimer] = useState(false)
+  const { LoaderComponent, success } = useLoader({ 
+    startTimer, 
+    endTimer, 
+    duration: DURATION 
+  })
 
-  const openDialogHandler = useCallback((data: ICountry) => setOpen(data), [])
+  useEffect(() => {
+    if (endTimer) {
+      setEndTimer(false)
+    }
+  }, [endTimer])
+
+  const onMouseDown = useCallback(() => setStartTimer(true), [])
+
+  const onMouseUp = (country: ICountry) => {
+    setEndTimer(true)
+    setStartTimer(false)
+    success && setOpen(country)
+  }
 
   const closeHandler = useCallback(() => setOpen(false), [])
 
@@ -20,7 +42,8 @@ const Table: FC<TableProps> = ({ data }) => {
             <LineItem 
               key={index} 
               country={item} 
-              onSuccess={openDialogHandler}
+              onMouseDown={onMouseDown}
+              onMouseUp={onMouseUp}
             />
           ))}
         </tbody>
@@ -29,6 +52,7 @@ const Table: FC<TableProps> = ({ data }) => {
         data={open} 
         onClose={closeHandler}
       />
+      {LoaderComponent}
     </div>
   )
 }

@@ -1,5 +1,4 @@
 export const DIALOG_HEADER = "Country detailed information"
-export const DIALOG_FOOTER = "Some Footer :)"
 export const DIALOG_COUNTRY = "Country:"
 export const DIALOG_CAPITAL = "Capital:"
 export const DIALOG_CODE = "Code:"

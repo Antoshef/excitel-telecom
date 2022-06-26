@@ -1,6 +1,6 @@
 import { FC, memo } from "react";
 import { ICountry } from "../models";
-import { DIALOG_FOOTER, DIALOG_HEADER } from "./constants";
+import { DIALOG_HEADER } from "./constants";
 import DialogBody from "./DialogBody";
 
 type Props = {
@@ -9,19 +9,23 @@ type Props = {
 }
 
 const Dialog: FC<Props> = ({ data, onClose }) => {
-  
+  const clickHandler = (event: any) => {
+    if (event.target.id === "dialog") onClose()
+  }
   return (
     <>
-      {typeof data === "object" && <div id="dialog" className="dialog">
+      {typeof data === "object" && 
+      <div 
+        id="dialog" 
+        className="dialog"
+        onClick={clickHandler}
+      >
         <div className="dialog-content">
           <div className="dialog-header">
             <button onClick={onClose} className="close">&times;</button>
             <h2>{DIALOG_HEADER}</h2>
           </div>
           <DialogBody data={data} />
-          <div className="dialog-footer">
-            <h3>{DIALOG_FOOTER}</h3>
-          </div>
         </div>
       </div>
       }

@@ -3,7 +3,14 @@ import CustomTablePagination from './TableComponents/CustomTablePagination';
 import "./App.css"
 import { ICountry } from './models';
 import Loader from './Loader';
-import { countriesList, MAIN_HEADER, SEARCH, SortByEnum, SORT_BY } from './constants';
+import { 
+  MAIN_HEADER, 
+  NO_COUNTRIES_FOUND, 
+  NO_COUNTRIES_TO_DISPLAY, 
+  SEARCH, 
+  SortByEnum, 
+  SORT_BY 
+} from './constants';
 import * as _ from "lodash"
 import { sortHandler } from './helpers';
 import Dialog from './Dialog/Dialog';
@@ -59,6 +66,9 @@ const App: FC = () => {
       setIsLoading(false)
     } catch (err) {
       setIsLoading(false)
+      setComponentIsLoaded(true)
+      // @ts-ignore
+      alert(err.message)
       throw err
     }
   }
@@ -77,7 +87,9 @@ const App: FC = () => {
 
   const addSorting = (value: SortByEnum) => setCounties(sortHandler(value, countries))
 
-  const closeHandler = useCallback(() => setOpen(false), [])
+  const closeHandler = useCallback(() => {
+    setOpen(false)
+  }, [])
 
   const displayDropdown = () => {
     const filteredCountryNames = filteredCountries
@@ -86,7 +98,8 @@ const App: FC = () => {
 
     return (
       <div className="dropdown-menu">
-        {filteredCountryNames && filteredCountryNames.map(item => (
+        {Boolean(filteredCountryNames.length)
+          ? filteredCountryNames.map(item => (
           <span 
             onClick={() => pickNameHandler(item.name)} 
             className="dropdown-item"
@@ -94,7 +107,9 @@ const App: FC = () => {
           >
             {item.name}
           </span>
-        ))}
+        ))
+          : <span>{NO_COUNTRIES_FOUND}</span>
+        }
       </div>
     )
   }
@@ -127,7 +142,8 @@ const App: FC = () => {
           </select>
         </div>
       </div>
-      <CustomTablePagination data={countries} />
+      {Boolean(countries.length) && <CustomTablePagination data={countries} />}
+      {Boolean(!countries.length) && componentIsLoaded && <h3>{NO_COUNTRIES_TO_DISPLAY}</h3>}
       <Dialog
         data={open} 
         onClose={closeHandler}
