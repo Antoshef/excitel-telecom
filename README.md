@@ -1,3 +1,6 @@
+Don't forget to open https://cors-anywhere.herokuapp.com/corsdemo and then click the "Request temporary access to the demo server"
+button, to allow access to the proxy server, and use the fetch API free.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
